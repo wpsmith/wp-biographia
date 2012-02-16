@@ -59,7 +59,7 @@ class WP_Biographia extends WP_Biographia_v1 {
 	
 	function plugins_loaded() {
 
-		register_activation_hook(__FILE__, 'wp_biographia_add_defaults');
+		register_activation_hook(__FILE__, array( $this, 'add_settings' ) );
 
 		$this->hook( 'wp_enqueue_scripts', 'style' );
 		$this->hook( 'init' );	
@@ -112,7 +112,7 @@ class WP_Biographia extends WP_Biographia_v1 {
 	/*
 	 * Define and set up the default settings and options for formatting the Biography Box
 	 */
-	function add_defaults() {
+	function add_settings() {
 		$this->wp_biographia_settings = $this->get_option();
 		
 		if( ! is_array( $this->wp_biographia_settings ) ) {
@@ -693,7 +693,8 @@ class WP_Biographia extends WP_Biographia_v1 {
 					$link_title = sprintf( $title_noname_stub, $link_attrs['link_title']);
 				
 				$link_body = ( $display_icons ) ? $link_attrs['link_icon'] : $link_attrs['link_text'];
-				$link_key = ( $link_key == 'web' ) ? 'website' : 'web';
+				$link_key = ( $link_key != 'web' ) ? $link_key  : 'website';
+				echo $link_key;
 				$wp_biographia_links[] = $this->link_item( $display_icons, $item_stub, $wp_biographia_author[$link_key], $link_title, $link_body );
 
 			}
@@ -724,11 +725,11 @@ class WP_Biographia extends WP_Biographia_v1 {
 		
 		$item_glue = ( $display_icons == 'icon' ) ? "" : " | ";
 		if ( ! empty( $wp_biographia_links ) ) {
-			$wp_biographia_content[] = '<div class="wp-biographia-links">'
+			$wp_biographia_content[] = apply_filters( 'wp_biographia_links' , '<div class="wp-biographia-links">'
 				. '<small><ul class="' . $list_class . '">'
 				. implode ( $item_glue, $wp_biographia_links )
 				. '</ul></small>'
-				. '</div>';
+				. '</div>' , $wp_biographia_links , $item_glue , $list_class );
 		}
 		
 		if ( ! $this->for_feed ) {
@@ -749,22 +750,19 @@ class WP_Biographia extends WP_Biographia_v1 {
 					. '</div>';
 			}
 
-			$wp_biographia_biography[] = '<div class="wp-biographia-text">'
+			$wp_biographia_biography[] = apply_filters( 'wp_biographia_feed' , '<div class="wp-biographia-text">'
 				. implode ( '', $wp_biographia_content )
-				. '</div></div>';
+				. '</div></div>' , $wp_biographia_content , $wp_biographia_settings );
 		}
 		
-		else {
-			$wp_biographia_biography[] = '<p>';
-
-			if ( ! empty( $wp_biographia_settings['wp_biographia_content_image'] ) &&
+		elseif ( ! empty( $wp_biographia_settings['wp_biographia_content_image'] ) &&
 					( $wp_biographia_settings['wp_biographia_content_image'] == 'on' ) ) {
+						$wp_biographia_biography[] = '<p>';
 						$wp_biographia_biography[] = '<div style="float:left; text-align:left;>'.$wp_biographia_author_pic.'</div>';
-			}
-			$wp_biographia_biography[] = $wp_biographia_content.'</p>';		
+						$wp_biographia_biography[] = $wp_biographia_content.'</p>';	
 		}
 		
-		return implode ( '', $wp_biographia_biography );
+		return apply_filters( 'wp_biographia_biography' , implode ( '', $wp_biographia_biography ) , $wp_biographia_biography );
 	}
 	
 	function link_item( $display_icons, $pattern, $link_key, $link_title, $link_body ) {
@@ -780,12 +778,12 @@ class WP_Biographia extends WP_Biographia_v1 {
 	
 }
 
-$_wp_biographia = new WP_Biographia;
-
 define ('WPBIOGRAPHIA_VERSION', '24');
 define ('WPBIOGRAPHIA_BASENAME', plugin_basename (__FILE__) );
 define ('WPBIOGRAPHIAURL_URL', plugin_dir_url(__FILE__));
 define ('WPBIOGRAPHIAURL_PATH', plugin_dir_path(__FILE__));
+
+$_wp_biographia = new WP_Biographia;
 
 require_once( WPBIOGRAPHIAURL_PATH . "includes/wp-biographia-admin.php" );
 
