@@ -789,3 +789,26 @@ define ('WPBIOGRAPHIAURL_URL', plugin_dir_url(__FILE__));
 define ('WPBIOGRAPHIAURL_PATH', plugin_dir_path(__FILE__));
 
 require_once( WPBIOGRAPHIAURL_PATH . "includes/wp-biographia-admin.php" );
+
+/*
+ * Define plugin specific core action hooks
+ *
+ * 1) Add in our admin panel
+ * 2) Add in our scripts for the admin panel
+ * 3) Add in our CSS for the admin panel
+ * 4) Add in our CSS for the generated page
+ * 5) Add in checking for updating the configuration options after a plugin upgrade and load the i18n text domain
+ * 6/7) Add in user profile extensions for excluding the Biography Box
+ * 8/9) Save user profile extensions for exclusing the Biography Box
+ */
+
+add_action ('admin_menu','wp_biographia_add_options_subpanel');
+add_action ('admin_print_scripts', 'wp_biographia_add_admin_scripts');
+add_action ('admin_print_styles', 'wp_biographia_add_admin_styles');
+
+add_action ('admin_init', 'wp_biographia_admin_init');
+add_action ('show_user_profile', 'wp_biographia_add_profile_extensions');
+add_action ('edit_user_profile', 'wp_biographia_add_profile_extensions');
+add_action ('personal_options_update', 'wp_biographia_save_profile_extensions');
+add_action ('edit_user_profile_update', 'wp_biographia_save_profile_extensions');
+add_filter ('plugin_action_links_' . plugin_basename (__FILE__), 'wp_biographia_settings_link');
