@@ -788,5 +788,4 @@ define ('WPBIOGRAPHIA_BASENAME', plugin_basename (__FILE__) );
 define ('WPBIOGRAPHIAURL_URL', plugin_dir_url(__FILE__));
 define ('WPBIOGRAPHIAURL_PATH', plugin_dir_path(__FILE__));
 
-require_once( "wp-biographia-class.php");
 require_once( WPBIOGRAPHIAURL_PATH . "includes/wp-biographia-admin.php" );
