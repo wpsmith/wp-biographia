@@ -732,7 +732,8 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 		// Now deal with the other links that follow the same format and can be "templatised" ...
 		foreach( $link_items as $link_key => $link_attrs ) {
 			$option_name = 'wp_biographia_content_' . $link_key;
-			if ( ! empty( $wp_biographia_settings[$option_name] ) && ( $wp_biographia_settings[$option_name] == 'on' ) ) {
+			if ( ! empty( $wp_biographia_settings[$option_name] ) && ( $wp_biographia_settings[$option_name] == 'on' ) && ! empty( $wp_biographia_author[$link_key] ) ) {
+
 				if ( ! empty( $wp_biographia_formatted_name ) )
 					$link_title = sprintf( $title_name_stub, $wp_biographia_formatted_name, $link_attrs['link_title']);
 				else
