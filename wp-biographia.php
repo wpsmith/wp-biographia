@@ -423,7 +423,6 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 			if ( $post->post_type == $post_type ) {
 				
 				if ( $this->get_option( 'wp_biographia_display_' . $post_type_name ) || $is_shortcode ) {
-					$new_content = $content . 'OPTION TRUE';
 					// check exclusions
 					$post_option = 'wp_biographia_' . $post_type . '_exclusions';
 					$global_option = 'wp_biographia_global_' . $post_type . '_exclusions';
@@ -431,12 +430,11 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 					if ( $this->get_option( $post_option ) || $this->get_option( $global_option ) ) {
 						$post_exclusions = $global_exclusions = array ();
 						
-						if ( $this->get_option( $post_option ) ) {
+						if ( $this->get_option( $post_option ) )
 							$post_exclusions = explode ( ',', $this->get_option( $post_option ) );
-						}
-						if ( $this->get_option( $global_option ) ) {
+							
+						if ( $this->get_option( $global_option ) )
 							$global_exclusions = explode ( ',', $this->get_option( $global_option ) );
-						}
 						
 						if ( ! in_array( $post->ID, $post_exclusions ) && ! in_array( $post->ID, $global_exclusions ) && $this->is_last_page() ) {
 								$new_content = sprintf( $pattern, $content, $bio_content );
