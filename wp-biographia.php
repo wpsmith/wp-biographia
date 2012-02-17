@@ -826,7 +826,7 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 		$item_class = "wp-biographia-item-" . $display_icons;
 		$link_class = "wp-biographia-link-" . $display_icons;
 		
-		if ( $display_icons )
+		if ( $display_icons == 'icon' )
 			return sprintf( $pattern, $link_key, $link_title, $link_class, $link_body, $item_class );
 		else
 			return sprintf( $pattern, $link_key, $link_title, $link_class, $link_body );
