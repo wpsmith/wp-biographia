@@ -466,8 +466,10 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 		global $post;
 
 		$wp_biographia_settings = $this->get_option();
-		
-		if ( ( get_user_meta( $this->author_id, 'wp_biographia_suppress_posts', true ) == 'on' ) && ( $post->post_type != 'page' ) ) return;
+		if ( ! $this->author_id || $this->author_id == 0 )
+			$this->author_id = get_the_author_meta( 'ID' );
+			
+		if ( ( get_user_meta( $this->author_id, 'wp_biographia_suppress_posts', true ) == 'on' ) && ( $post->post_type != 'page' ) ) return $content;
 		
 		switch( $context ) {
 			case "frontpage":
@@ -479,14 +481,17 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 					$new_content = $this->post_types_cycle( $content, $pattern );
 				break;
 			case "page":
-				
 				if ( ( $this->get_option( 'wp_biographia_display_pages' ) &&	$this->get_option( 'wp_biographia_display_pages' ) && get_user_meta( $this->author_id, 'wp_biographia_suppress_pages', true ) !== 'on' ) || ( $is_shortcode && get_user_meta ($this->author_id, 'wp_biographia_suppress_pages', true ) !== 'on' ) )
 					$this->display_bio = true;
 				
 				if ( $this->display_bio ) {
+					
+					$page_exclusions = $this->get_option( 'wp_biographia_page_exclusions' );
+					
 					if ( $this->get_option( 'wp_biographia_page_exclusions' ) ) {
-						$exclusions = explode (',', $this->get_option( 'wp_biographia_page_exclusions' ) );
-						$display_bio = ! in_array( $post->ID, $exclusions );
+						$page_exclusions = explode (',', $this->get_option( 'wp_biographia_page_exclusions' ) );
+						print_r( $page_exclusions );
+						$this->display_bio = ! in_array( $post->ID, $page_exclusions );
 					}
 				}
 
@@ -494,6 +499,8 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 					$bio_content = $this->display();
 					$new_content = sprintf( $pattern, $content, $bio_content );
 				}
+				else
+					$new_content = $content;
 				break;
 			case "single":
 				// Cycle through Custom Post Types
