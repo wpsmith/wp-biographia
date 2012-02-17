@@ -724,7 +724,7 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 
 			$link_text = __( 'Mail', 'wp-biographia' );
 			
-			$link_body = ( $display_icons ) ? $this->icon_dir_url . 'mail.png' : $link_text;
+			$link_body = ( $display_icons == "icon" ) ? $this->icon_dir_url . 'mail.png' : $link_text;
 			$wp_biographia_links[] = $this->link_item( $display_icons, $item_stub, 'mailto:' . antispambot( $wp_biographia_author['email'] ), $link_title, $link_body );
 				
 		}
@@ -738,7 +738,7 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 				else
 					$link_title = sprintf( $title_noname_stub, $link_attrs['link_title']);
 				
-				$link_body = ( $display_icons ) ? $link_attrs['link_icon'] : $link_attrs['link_text'];
+				$link_body = ( $display_icons == "icon" ) ? $link_attrs['link_icon'] : $link_attrs['link_text'];
 				$link_key = ( $link_key != 'web' ) ? $link_key  : 'website';
 				$wp_biographia_links[] = $this->link_item( $display_icons, $item_stub, $wp_biographia_author[$link_key], $link_title, $link_body );
 
