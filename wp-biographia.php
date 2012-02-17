@@ -110,7 +110,7 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 
 		foreach(  $this->defaults() as $key => $data ) {
 			if ( $data['contactmethod'] )
-				$contactmethods[$key] = $data['name'];
+				$contactmethods[$key] = $data['contactmethod'];
 		}
 
 		return $contactmethods;
@@ -191,7 +191,7 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 	 */
 	function defaults() {
 		$defaults = array(
-			//option name => array ( field => custom field , contactmethod => true)
+			//option name => array ( field => custom field , contactmethod => field name)
 			'account-name' => array( 
 					'field' => 'user_login',
 				),
@@ -215,78 +215,63 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 				),
 			'twitter' => array( 
 					'field' => 'twitter',
-					'name' => __( 'Twitter', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Twitter', 'wp-biographia' ),
 				),
 			'facebook' => array( 
 					'field' => 'facebook',
-					'name' => __( 'Facebook', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Facebook', 'wp-biographia' ),				
 				),
 			'linkedin' => array( 
 					'field' => 'linkedin',
-					'name' => __( 'LinkedIn', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'LinkedIn', 'wp-biographia' ),				
 				),
 			'googleplus' => array( 
 					'field' => 'googleplus',
-					'name' => __( 'Google+', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Google+', 'wp-biographia' ),					
 				),
 			'delicious' => array( 
 					'field' => 'delicious',
-					'name' => __( 'Delicious', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Delicious', 'wp-biographia' ),					
 				),
 			'flickr' => array( 
 					'field' => 'flickr',
-					'name' => __( 'Flickr', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Flickr', 'wp-biographia' ),					
 				),
 			'picasa' => array( 
 					'field' => 'picasa',
-					'name' => __( 'Picasa', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Picasa', 'wp-biographia' ),
 				),
 			'vimeo' => array( 
 					'field' => 'vimeo',
-					'name' => __( 'Vimeo', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Vimeo', 'wp-biographia' ),
 				),
 			'youtube' => array( 
 					'field' => 'youtube',
-					'name' => __( 'YouTube', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'YouTube', 'wp-biographia' ),
 				),
 			'reddit' => array( 
 					'field' => 'reddit',
-					'name' => __( 'Reddit', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Reddit', 'wp-biographia' ),
 				),
 			'reddit' => array( 
 					'field' => 'reddit',
-					'name' => __( 'Reddit', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Reddit', 'wp-biographia' ),
 				),
 			'yim' => array( 
 					'field' => 'yim',
-					'name' => __( 'Yahoo IM', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Yahoo IM', 'wp-biographia' ),
 				),
 			'aim' => array( 
 					'field' => 'aim',
-					'name' => __( 'AIM', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'AIM', 'wp-biographia' ),
 				),
 			'msn' => array( 
 					'field' => 'msn',
-					'name' => __( 'Windows Live Messenger', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Windows Live Messenger', 'wp-biographia' ),
 				),
 			'jabber' => array( 
 					'field' => 'jabber',
-					'name' => __( 'Jabber / Google Talk', 'wp-biographia' ),
-					'contactmethod' => true,
+					'contactmethod' => __( 'Jabber / Google Talk', 'wp-biographia' ),
 				),
 			
 		);
