@@ -750,7 +750,6 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 
 		// Finally, deal with the "More Posts" link
 		if ( ! empty( $wp_biographia_settings['wp_biographia_content_posts'] ) && ( $wp_biographia_settings['wp_biographia_content_posts'] != 'none' ) && ( $wp_biographia_author['posts'] > 0 ) ) {
-			echo "wp_biographia_content_posts";
 			if ( ! empty( $wp_biographia_formatted_name ) )
 				$link_title = sprintf (__( 'More Posts By %s', 'wp-biographia' ), $wp_biographia_formatted_name);
 			else
