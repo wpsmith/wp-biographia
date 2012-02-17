@@ -639,6 +639,8 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 	function display() {
 		$wp_biographia_settings = $this->get_option();
 		
+		if ( ! $this->author_id || $this->author_id == 0 )
+			$this->author_id = get_the_author_meta( 'ID' );
 		$wp_biographia_content = $wp_biographia_links = $wp_biographia_author = $wp_biographia_biography = array();
 			
 		foreach(  $this->defaults() as $key => $data ) {
@@ -648,8 +650,8 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 				$wp_biographia_author[$key] = get_the_author_meta('first_name', $this->author_id ) . ' ' . get_the_author_meta ('last_name', $this->author_id );
 		}
 		
-		$wp_biographia_author['posts'] = (int)count_user_posts ($this->author_id);
-		$wp_biographia_author['posts_url'] = get_author_posts_url ($this->author_id);
+		$wp_biographia_author['posts'] = (int)count_user_posts( $this->author_id );
+		$wp_biographia_author['posts_url'] = get_author_posts_url( $this->author_id );
 
 		// Add Image Size Output
 		$wp_biographia_author_pic_size =
@@ -748,6 +750,7 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 
 		// Finally, deal with the "More Posts" link
 		if ( ! empty( $wp_biographia_settings['wp_biographia_content_posts'] ) && ( $wp_biographia_settings['wp_biographia_content_posts'] != 'none' ) && ( $wp_biographia_author['posts'] > 0 ) ) {
+			echo "wp_biographia_content_posts";
 			if ( ! empty( $wp_biographia_formatted_name ) )
 				$link_title = sprintf (__( 'More Posts By %s', 'wp-biographia' ), $wp_biographia_formatted_name);
 			else
@@ -764,7 +767,7 @@ class WP_Biographia_v1 extends WPS_Plugin_Base_v1 {
 					break;
 			}
 			
-			$link_body = ( $display_icons ) ? $this->icon_dir_url . 'wordpress.png' : $link_text;
+			$link_body = ( $display_icons == "icon" ) ? $this->icon_dir_url . 'wordpress.png' : $link_text;
 			$wp_biographia_links[] = $this->link_item( $display_icons, $item_stub, $wp_biographia_author['posts_url'], $link_title, $link_body );
 			
 		}
