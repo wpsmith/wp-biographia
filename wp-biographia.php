@@ -90,15 +90,22 @@ class WP_Biographia extends WP_Biographia_v1 {
 		load_plugin_textdomain( 'wp-biographia', false, $lang_dir );
 	}
 	
+	/*
+	 * Filterable defaults (future use?)
+	 * Used in display() and user_contactmethods()
+	 *
+	 * @author Travis Smith
+	 * @return array output
+	 */
 	function wps_get_users( $role = '' , $args = array( 0 => 'ID' , 1 => 'user_login') ) {
 		$wp_user_search = new WP_User_Query( array( 'role' => $role, 'fields' => $args ) );
 		$roles = $wp_user_search->get_results();
+		return $roles;
 	}
 	
 	/*
 	 * Sanitize/filter the author's profile contact info, via the user_contactmethods filter hook
 	 */
-
 	function user_contactmethods( $contactmethods ) {
 
 		foreach(  $this->defaults() as $key => $data ) {
@@ -158,6 +165,11 @@ class WP_Biographia extends WP_Biographia_v1 {
 			$this->set_option( 'wp_biographia_display_feed' , '' );
 	}
 	
+	/*
+	 * Determines whether current page is the last page
+	 *
+	 * @return boolean
+	 */
 	function is_last_page() {
 		global $page;
 		global $numpages;
@@ -169,10 +181,17 @@ class WP_Biographia extends WP_Biographia_v1 {
 		}
 		else return true;
 	}
-
+	
+	/*
+	 * Filterable defaults (future use?)
+	 * Used in display() and user_contactmethods()
+	 *
+	 * @author Travis Smith
+	 * @return array output
+	 */
 	function defaults() {
 		$defaults = array(
-			//option name => custom field
+			//option name => array ( field => custom field , contactmethod => true)
 			'account-name' => array( 
 					'field' => 'user_login',
 				),
@@ -271,7 +290,12 @@ class WP_Biographia extends WP_Biographia_v1 {
 		
 		return  apply_filters( '$wp_biographia_defaults' , $defaults );
 	}
-
+	
+	/*
+	 * Items to be linked
+	 *
+	 * @return array filterable link items
+	 */
 	function link_items() {
 		$link_items = array (
 			"web" => array (
@@ -341,6 +365,13 @@ class WP_Biographia extends WP_Biographia_v1 {
 		wp_enqueue_style ('wp-biographia-bio', WPBIOGRAPHIAURL_URL . 'css/wp-biographia.css');	
 	}
 	
+	/*
+	 * Controls how the bio box is outputed based on page context
+	 *
+	 * @author Travis Smith
+	 * @param string content
+	 * @return HTML output
+	 */
 	function insert( $content ) {
 		$new_content = $content;
 
@@ -377,6 +408,14 @@ class WP_Biographia extends WP_Biographia_v1 {
 		return $new_content;
 	}
 	
+	/*
+	 * Cycles through all the post types
+	 *
+	 * @author Travis Smith
+	 * @param string content
+	 * @param string pattern for output
+	 * @return new HTML content
+	 */
 	function post_types_cycle( $content = '' , $pattern = '') {
 		global $post;
 		$new_content = $content;
@@ -432,6 +471,11 @@ class WP_Biographia extends WP_Biographia_v1 {
 		return $new_content;
 	}
 	
+	/*
+	 * Outputs the bio box based on page context
+	 *
+	 * @author Travis Smith
+	 */
 	function insert_biographia( $context, $content, $pattern ) {
 		global $post;
 
@@ -531,14 +575,14 @@ class WP_Biographia extends WP_Biographia_v1 {
 				$content[] = '<div class="wp-biographia-contributors">';
 				foreach( $contributors as $user_obj) {
 					if ($mode == 'raw') {
-						$content[] = wp_biographia_display ($is_feed, $user_obj->ID, $this->override);
+						$content[] = $this->display ($is_feed, $user_obj->ID, $this->override);
 					}
 
 					elseif ($mode == 'configured') {
 						$placeholder_content = "";
 						$is_shortcode = true;
 
-						$content[] = wp_biographia_insert ($placeholder_content,
+						$content[] = $this->insert ($placeholder_content,
 														$is_shortcode,
 														$user_obj->ID,
 														$this->override);
@@ -551,14 +595,14 @@ class WP_Biographia extends WP_Biographia_v1 {
 				$user_obj = get_user_by ('login', $author);
 				if ($user_obj) {
 					if ($mode == 'raw') {
-						$content[] = wp_biographia_display ($is_feed, $user_obj->ID, $this->override);
+						$content[] = $this->display ($is_feed, $user_obj->ID, $this->override);
 					}
 
 					elseif ($mode == 'configured') {
 						$placeholder_content = "";
 						$is_shortcode = true;
 
-						$content[] = wp_biographia_insert ($placeholder_content,
+						$content[] = $this->insert ($placeholder_content,
 														$is_shortcode,
 														$user_obj->ID,
 														$this->override);
@@ -569,27 +613,26 @@ class WP_Biographia extends WP_Biographia_v1 {
 		
 		else {	
 			if ($mode == 'raw') {
-				$content[] = wp_biographia_display ($is_feed, NULL, $this->override);
+				$content[] = $this->display ($is_feed, NULL, $this->override);
 			}
 		
 			elseif ($mode == 'configured') {
 				$placeholder_content = "";
 				$is_shortcode = true;
 			
-				$content[] = wp_biographia_insert ($placeholder_content,
+				$content[] = $this->insert ($placeholder_content,
 												 $is_shortcode,
 												 NULL,
 												 $this->override);
 			}
 		}	
 
-		return apply_filters( '' , implode( ' ' , $content ) , $content);
+		return apply_filters( 'wp_biographia_sc' , implode( ' ' , $content ) , $content);
 	}
 	
 	/*
 	 * Produce and format the Biography Box according to the currently defined options
 	 */
-
 	function display() {
 		$wp_biographia_settings = $this->get_option();
 		
@@ -663,7 +706,12 @@ class WP_Biographia extends WP_Biographia_v1 {
 
 		if ( ( $display_icons ) && ( ! empty( $wp_biographia_settings['wp_biographia_content_alt_icons'] ) && $wp_biographia_settings['wp_biographia_content_alt_icons'] == 'on' && ! empty( $wp_biographia_settings['wp_biographia_content_icon_url'] ) ) )
 				$icon_dir_url = $wp_biographia_settings['wp_biographia_content_icon_url'];
-
+				
+		$link_items = $this->link_items();
+		$item_stub = ( $display_icons == "icon" ) ? '<li><a href="%s" title="%s" class="%s"><img src="%s" class="%s" /></a></li>' : '<li><a href="%s" title="%s" class="%s">%s</a></li>';
+		$title_name_stub = __( '%1$s On %2$s', 'wp-biographia' );
+		$title_noname_stub = __( 'On %s', 'wp-biographia' );
+		
 		// Deal with the email link first as a special case ...
 		if ( ( ! empty( $wp_biographia_settings['wp_biographia_content_email'] ) && ( $wp_biographia_settings['wp_biographia_content_email'] == 'on' ) ) && ( ! empty( $wp_biographia_author['email'] ) ) ) {
 			if ( ! empty( $wp_biographia_formatted_name ) )
@@ -677,11 +725,6 @@ class WP_Biographia extends WP_Biographia_v1 {
 			$wp_biographia_link_item = $this->link_item( $display_icons, $item_stub, 'mailto:' . antispambot( $wp_biographia_author['email'] ), $link_title, $link_body );
 				
 		}
-		
-		$link_items = $this->link_items();
-		$item_stub = ( $display_icons == "icon" ) ? '<li><a href="%s" title="%s" class="%s"><img src="%s" class="%s" /></a></li>' : '<li><a href="%s" title="%s" class="%s">%s</a></li>';
-		$title_name_stub = __( '%1$s On %2$s', 'wp-biographia' );
-		$title_noname_stub = __( 'On %s', 'wp-biographia' );
 		
 		// Now deal with the other links that follow the same format and can be "templatised" ...
 		foreach( $link_items as $link_key => $link_attrs ) {
@@ -724,9 +767,10 @@ class WP_Biographia extends WP_Biographia_v1 {
 		}
 		
 		$item_glue = ( $display_icons == 'icon' ) ? "" : " | ";
+		$list_class = "wp-biographia-list-" . $display_icons;
 		if ( ! empty( $wp_biographia_links ) ) {
 			$wp_biographia_content[] = apply_filters( 'wp_biographia_links' , '<div class="wp-biographia-links">'
-				. '<small><ul class="' . $list_class . '">'
+				. '<small><ul class="wp-biographia-list ' . $list_class . '">'
 				. implode ( $item_glue, $wp_biographia_links )
 				. '</ul></small>'
 				. '</div>' , $wp_biographia_links , $item_glue , $list_class );
@@ -765,8 +809,18 @@ class WP_Biographia extends WP_Biographia_v1 {
 		return apply_filters( 'wp_biographia_biography' , implode ( '', $wp_biographia_biography ) , $wp_biographia_biography );
 	}
 	
+	/*
+	 * Produce and format the Biography Box according to the currently defined options
+	 *
+	 * @author Travis Smith
+	 * @param string icon/text
+	 * @param string pattern for output
+	 * @param string url
+	 * @param string link title
+	 * @param string link body
+	 * @return HTML output
+	 */
 	function link_item( $display_icons, $pattern, $link_key, $link_title, $link_body ) {
-		$list_class = "wp-biographia-list-" . $display_icons;
 		$item_class = "wp-biographia-item-" . $display_icons;
 		$link_class = "wp-biographia-link-" . $display_icons;
 		
