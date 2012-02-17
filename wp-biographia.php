@@ -10,8 +10,8 @@ License: GPL2
 Text Domain: wp-biographia
 */
  
-if ( !class_exists( 'WP_Biographia_v1' ) ) {
-	class WP_Biographia_v1 {
+if ( !class_exists( 'WPS_Plugin_Base_v1' ) ) {
+	class WPS_Plugin_Base_v1 {
 		function hook( $h ) {
 			$p = 10;
 			$m = $this->sanitize_method( $h );
@@ -31,7 +31,7 @@ if ( !class_exists( 'WP_Biographia_v1' ) ) {
 	}
 }
 
-class WP_Biographia extends WP_Biographia_v1 { 
+class WP_Biographia_v1 extends WPS_Plugin_Base_v1 { 
 
 	static $instance;
 	public $author_id;
@@ -837,7 +837,7 @@ define ('WPBIOGRAPHIA_BASENAME', plugin_basename (__FILE__) );
 define ('WPBIOGRAPHIAURL_URL', plugin_dir_url(__FILE__));
 define ('WPBIOGRAPHIAURL_PATH', plugin_dir_path(__FILE__));
 
-$_wp_biographia = new WP_Biographia;
+$_wp_biographia = new WP_Biographia_v1;
 
 require_once( WPBIOGRAPHIAURL_PATH . "includes/wp-biographia-admin.php" );
 
